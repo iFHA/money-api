@@ -19,7 +19,7 @@ public class ControllerAdvice {
     public ResponseEntity<ErroApi> handleConstraintViolationException(ConstraintViolationException ex) {
         var msg = ex.getConstraintViolations()
         .stream()
-        .map(violation->violation.getPropertyPath()+" "+violation.getMessageTemplate())
+        .map(violation->violation.getPropertyPath()+" "+violation.getMessage())
         .collect(Collectors.joining("\n"));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroApi(msg));
     }

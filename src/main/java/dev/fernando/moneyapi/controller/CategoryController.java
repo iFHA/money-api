@@ -6,16 +6,20 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import dev.fernando.moneyapi.model.Category;
+import dev.fernando.moneyapi.model.Pessoa;
 import dev.fernando.moneyapi.service.CategoryService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -49,6 +53,17 @@ public class CategoryController {
         response.setHeader("Location", uri.toASCIIString());
         return ResponseEntity.status(HttpStatus.CREATED).body(insertedCategory);
     }
-    
+    @PutMapping("{id}")
+    public ResponseEntity<Category> put(@PathVariable Long id, @RequestBody @Valid Category entity) {
+        Category category = this.categoryService.findById(id);
+        category.setName(entity.getName());
+        this.categoryService.save(category);
+        return ResponseEntity.ok(category);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        this.categoryService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
     
 }

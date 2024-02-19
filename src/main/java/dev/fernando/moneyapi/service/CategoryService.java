@@ -23,4 +23,8 @@ public class CategoryService {
     public Category save(Category category) {
         return this.categoryRepository.save(category);
     }
+    public void deleteById(Long id) {
+        var category = this.findById(id);
+        this.categoryRepository.delete(category);
+    }
 }

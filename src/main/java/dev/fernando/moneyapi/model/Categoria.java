@@ -10,14 +10,14 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "categoria")
+public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
     @Length(max = 50)
-    private String name;
+    private String nome;
 
     public Long getId() {
         return id;
@@ -25,11 +25,11 @@ public class Category {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
-    public void setName(String description) {
-        this.name = description;
+    public void setNome(String description) {
+        this.nome = description;
     }
     @Override
     public int hashCode() {
@@ -46,7 +46,7 @@ public class Category {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Category other = (Category) obj;
+        Categoria other = (Categoria) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

@@ -2,6 +2,7 @@ package dev.fernando.moneyapi.controller;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import dev.fernando.moneyapi.event.RecursoCriadoEvent;
 import dev.fernando.moneyapi.model.Pessoa;
 import dev.fernando.moneyapi.service.PessoaService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,8 +27,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("pessoas")
 public class PessoaController {
     private final PessoaService pessoaService;
-    public PessoaController(final PessoaService pessoaService) {
+    private final ApplicationEventPublisher eventPublisher;
+    public PessoaController(
+        final PessoaService pessoaService, 
+        final ApplicationEventPublisher eventPublisher) {
         this.pessoaService = pessoaService;
+        this.eventPublisher = eventPublisher;
     }
 
     @GetMapping
@@ -41,13 +47,9 @@ public class PessoaController {
     }
 
     @PostMapping
-    public ResponseEntity<Pessoa> newPessoa(@RequestBody Pessoa Pessoa, HttpServletResponse response) {
-        var insertedPessoa = this.pessoaService.save(Pessoa);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                                            .path("/{id}")
-                                            .buildAndExpand(insertedPessoa.getId())
-                                            .toUri();
-        response.setHeader("Location", uri.toASCIIString());
+    public ResponseEntity<Pessoa> newPessoa(@RequestBody Pessoa pessoa, HttpServletResponse response) {
+        var insertedPessoa = this.pessoaService.save(pessoa);
+        this.eventPublisher.publishEvent(new RecursoCriadoEvent(insertedPessoa.getId(), response));
         return ResponseEntity.status(HttpStatus.CREATED).body(insertedPessoa);
     }
     @PutMapping("{id}")

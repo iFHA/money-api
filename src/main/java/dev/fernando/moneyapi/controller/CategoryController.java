@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import dev.fernando.moneyapi.event.RecursoCriadoEvent;
 import dev.fernando.moneyapi.model.Category;
 import dev.fernando.moneyapi.model.Pessoa;
 import dev.fernando.moneyapi.service.CategoryService;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +30,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
-    public CategoryController(final CategoryService categoryService) {
+    private final ApplicationEventPublisher eventPublisher;
+    public CategoryController(
+        final CategoryService categoryService,
+        final ApplicationEventPublisher eventPublisher) {
         this.categoryService = categoryService;
+        this.eventPublisher = eventPublisher;
     }
 
     @GetMapping
@@ -46,11 +52,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Category> newCategory(@RequestBody Category category, HttpServletResponse response) {
         var insertedCategory = this.categoryService.save(category);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                                            .path("/{id}")
-                                            .buildAndExpand(insertedCategory.getId())
-                                            .toUri();
-        response.setHeader("Location", uri.toASCIIString());
+        this.eventPublisher.publishEvent(new RecursoCriadoEvent(insertedCategory.getId(), response));
         return ResponseEntity.status(HttpStatus.CREATED).body(insertedCategory);
     }
     @PutMapping("{id}")

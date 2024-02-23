@@ -20,11 +20,22 @@ public class PessoaService {
     public Pessoa findById(Long pessoaId) {
         return this.pessoaRepository.findById(pessoaId).orElseThrow(() -> new NotFoundException("Pessoa de id = %d não encontrada!".formatted(pessoaId)));
     }
-    public Pessoa save(Pessoa pessoa) {
+    public Pessoa newPessoa(Pessoa pessoa) {
         return this.pessoaRepository.save(pessoa);
+    }
+    public Pessoa update(Long id, Pessoa pessoa) {
+        Pessoa p = this.findById(id);
+        p.setNome(pessoa.getNome());
+        p.setEndereco(pessoa.getEndereco());
+        return this.pessoaRepository.save(p);
     }
     public void deleteById(Long id) {
         var pessoa = this.findById(id);
         this.pessoaRepository.delete(pessoa);
+    }
+    public void updateAtivo(Long id, Boolean ativo) {
+        Pessoa p = this.findById(id);
+        p.setAtivo(ativo);
+        this.pessoaRepository.save(p);
     }
 }

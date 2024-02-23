@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,6 +21,14 @@ public class ControllerAdvice {
         var msg = ex.getConstraintViolations()
         .stream()
         .map(violation->violation.getPropertyPath()+" "+violation.getMessage())
+        .collect(Collectors.joining("\n"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroApi(msg));
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErroApi> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        var msg = ex.getFieldErrors()
+        .stream()
+        .map(fieldError->fieldError.getField() + " " + fieldError.getDefaultMessage())
         .collect(Collectors.joining("\n"));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroApi(msg));
     }

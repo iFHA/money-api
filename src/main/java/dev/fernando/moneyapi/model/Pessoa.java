@@ -6,7 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "pessoa")
@@ -17,6 +19,8 @@ public class Pessoa {
     @NotBlank
     private String nome;
     private boolean ativo = true;
+    @Valid
+    @NotNull
     @Embedded
     private Endereco endereco;
 

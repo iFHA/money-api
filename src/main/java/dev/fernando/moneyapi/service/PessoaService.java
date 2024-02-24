@@ -38,4 +38,7 @@ public class PessoaService {
         p.setAtivo(ativo);
         this.pessoaRepository.save(p);
     }
+    public void deleteAll() {
+        this.pessoaRepository.deleteAll();
+    }
 }

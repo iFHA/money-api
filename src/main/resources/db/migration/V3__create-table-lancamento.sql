@@ -4,7 +4,7 @@ CREATE TABLE lancamento (
     data_vencimento DATE NOT NULL,
     data_pagamento DATE,
     valor decimal(15,2) NOT NULL,
-    observacao VARCHAR(20) NOT NULL,
+    observacao VARCHAR(20),
     tipo VARCHAR(20) NOT NULL,
     categoria_id BIGINT(20) NOT NULL,
     pessoa_id BIGINT(20) NOT NULL,

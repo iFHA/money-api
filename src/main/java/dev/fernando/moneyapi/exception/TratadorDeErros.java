@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.validation.ConstraintViolationException;
 
-@RestControllerAdvice
-public class ControllerAdvice {
+@ControllerAdvice
+public class TratadorDeErros {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErroApi> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErroApi(ex.getMessage()));

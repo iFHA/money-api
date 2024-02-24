@@ -5,6 +5,10 @@ import java.time.LocalDate;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import dev.fernando.moneyapi.enums.TipoLancamento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +18,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +26,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "lancamento")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,24 +40,24 @@ public class Lancamento {
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
 
-    @NotNull
     @Column(name = "data_pagamento")
     private LocalDate dataPagamento;
 
     @NotNull
     private BigDecimal valor;
 
-    @NotBlank
     @Length(min = 5, max = 20)
     private String observacao;
 
     @Enumerated(EnumType.STRING)
     private TipoLancamento tipo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne
     private Categoria categoria;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne
     private Pessoa pessoa;
 
     public Long getId() {

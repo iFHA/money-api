@@ -1,11 +1,16 @@
 package dev.fernando.moneyapi.model;
 
+import java.util.List;
+
 import org.hibernate.validator.constraints.Length;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -18,6 +23,10 @@ public class Categoria {
     @NotBlank
     @Length(max = 50)
     private String nome;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "categoria")
+    private List<Lancamento> lancamentos;
 
     public Long getId() {
         return id;

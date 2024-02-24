@@ -1,10 +1,15 @@
 package dev.fernando.moneyapi.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +28,10 @@ public class Pessoa {
     @NotNull
     @Embedded
     private Endereco endereco;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "pessoa")
+    private List<Lancamento> lancamentos;
 
     public Long getId() {
         return id;

@@ -2,6 +2,7 @@ package dev.fernando.moneyapi.exception;
 
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,5 +32,14 @@ public class TratadorDeErros {
         .map(fieldError->fieldError.getField() + " " + fieldError.getDefaultMessage())
         .collect(Collectors.joining("\n"));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroApi(msg));
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErroApi> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        var msg = ex.getLocalizedMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroApi(msg));
+    }
+    @ExceptionHandler(PessoaInativaException.class)
+    public ResponseEntity<ErroApi> handlePessoaInativaException(PessoaInativaException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroApi(ex.getMessage()));
     }
 }

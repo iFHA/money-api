@@ -12,6 +12,7 @@ import dev.fernando.moneyapi.model.Lancamento;
 import dev.fernando.moneyapi.model.Pessoa;
 import dev.fernando.moneyapi.repository.LancamentoRepository;
 import dev.fernando.moneyapi.repository.PessoaRepository;
+import dev.fernando.moneyapi.repository.filter.LancamentoFilter;
 
 @Service
 public class LancamentoService {
@@ -24,8 +25,8 @@ public class LancamentoService {
         this.lancamentoRepository = lancamentoRepository;
         this.pessoaRepository = pessoaRepository;
     }
-    public List<Lancamento> findAll() {
-        return this.lancamentoRepository.findAll();
+    public List<Lancamento> findAll(LancamentoFilter filtro) {
+        return this.lancamentoRepository.filtrar(filtro);
     }
     public Lancamento findById(Long lancamentoId) {
         return this.lancamentoRepository.findById(lancamentoId).orElseThrow(() -> new NotFoundException("Lancamento de id = %d não encontrado!".formatted(lancamentoId)));

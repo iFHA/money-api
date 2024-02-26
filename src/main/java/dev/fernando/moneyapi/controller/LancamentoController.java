@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.fernando.moneyapi.event.RecursoCriadoEvent;
 import dev.fernando.moneyapi.model.Lancamento;
+import dev.fernando.moneyapi.repository.filter.LancamentoFilter;
 import dev.fernando.moneyapi.service.LancamentoService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -31,8 +32,8 @@ public class LancamentoController {
         this.eventPublisher = eventPublisher;
     }
     @GetMapping
-    public ResponseEntity<List<Lancamento>> findAll() {
-        return ResponseEntity.ok().body(this.lancamentoService.findAll());
+    public ResponseEntity<List<Lancamento>> findAll(LancamentoFilter filtro) {
+        return ResponseEntity.ok().body(this.lancamentoService.findAll(filtro));
     }
     
     @GetMapping("/{lancamentoId}")

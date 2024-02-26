@@ -63,6 +63,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>6.1.7.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -72,6 +77,11 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<resources>
+            <resource>
+                <directory>target/generated-classes</directory>
+            </resource>
+        </resources>
 	</build>
 
 </project>

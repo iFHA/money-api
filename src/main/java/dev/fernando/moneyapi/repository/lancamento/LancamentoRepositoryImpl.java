@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import dev.fernando.moneyapi.model.Lancamento;
@@ -23,7 +26,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
     private EntityManager em;
 
     @Override
-    public List<Lancamento> filtrar(LancamentoFilter filtro) {
+    public Page<Lancamento> filtrar(LancamentoFilter filtro, Pageable pageable) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Lancamento> criteria = builder.createQuery(Lancamento.class);
 
@@ -34,7 +37,30 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
         TypedQuery<Lancamento> query = em.createQuery(criteria);
 
-        return query.getResultList();
+        adicionarRestricoesDePaginacao(query, pageable);
+
+        return new PageImpl<>(query.getResultList(), pageable, total(filtro));
+    }
+
+    private Long total(LancamentoFilter filtro) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+
+        Root<Lancamento> root = criteria.from(Lancamento.class);
+        Predicate[] predicates = criarRestricoes(filtro, builder, root);
+        criteria.where(predicates);
+        criteria.select(builder.count(root));
+        
+        return em.createQuery(criteria).getSingleResult();
+    }
+
+    private void adicionarRestricoesDePaginacao(TypedQuery<Lancamento> query, Pageable pageable) {
+        int paginaAtual = pageable.getPageNumber();
+        int totalRegistrosPorPagina = pageable.getPageSize();
+        int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
+        
+        query.setFirstResult(primeiroRegistroDaPagina);
+        query.setMaxResults(totalRegistrosPorPagina);
     }
 
     private Predicate[] criarRestricoes(LancamentoFilter filtro, CriteriaBuilder builder, Root<Lancamento> root) {

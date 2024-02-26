@@ -1,8 +1,8 @@
 package dev.fernando.moneyapi.controller;
 
-import java.util.List;
-
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,8 +32,8 @@ public class LancamentoController {
         this.eventPublisher = eventPublisher;
     }
     @GetMapping
-    public ResponseEntity<List<Lancamento>> findAll(LancamentoFilter filtro) {
-        return ResponseEntity.ok().body(this.lancamentoService.findAll(filtro));
+    public ResponseEntity<Page<Lancamento>> findAll(LancamentoFilter filtro, Pageable pageable) {
+        return ResponseEntity.ok().body(this.lancamentoService.findAll(filtro, pageable));
     }
     
     @GetMapping("/{lancamentoId}")

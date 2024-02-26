@@ -1,11 +1,11 @@
 package dev.fernando.moneyapi.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import dev.fernando.moneyapi.exception.ErroApi;
 import dev.fernando.moneyapi.exception.NotFoundException;
 import dev.fernando.moneyapi.exception.PessoaInativaException;
 import dev.fernando.moneyapi.model.Lancamento;
@@ -25,8 +25,8 @@ public class LancamentoService {
         this.lancamentoRepository = lancamentoRepository;
         this.pessoaRepository = pessoaRepository;
     }
-    public List<Lancamento> findAll(LancamentoFilter filtro) {
-        return this.lancamentoRepository.filtrar(filtro);
+    public Page<Lancamento> findAll(LancamentoFilter filtro, Pageable pageable) {
+        return this.lancamentoRepository.filtrar(filtro, pageable);
     }
     public Lancamento findById(Long lancamentoId) {
         return this.lancamentoRepository.findById(lancamentoId).orElseThrow(() -> new NotFoundException("Lancamento de id = %d não encontrado!".formatted(lancamentoId)));
